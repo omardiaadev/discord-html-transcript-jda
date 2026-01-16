@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>dev.omardiaa</groupId>
+  <artifactId>discord-html-transcript-jda</artifactId>
+  <version>1.0.0</version>
+
+  <name>discord-html-transcript-jda</name>
+  <description>discord-html-transcript-api Wrapper for Java Discord API.</description>
+  <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
+
+  <licenses>
+    <license>
+      <name>CC BY-SA 4.0</name>
+      <url>https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Omar Diaa</name>
+      <email>contact@omardiaa.dev</email>
+      <url>https://omardiaa.dev</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
+    <connection>scm:git:git://github.com/omardiaadev/discord-html-transcript-jda.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:omardiaadev/discord-html-transcript-jda.git</developerConnection>
+  </scm>
+
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>dev.omardiaa</groupId>
+      <artifactId>discord-html-transcript-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>6.3.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>club.minnced</groupId>
+          <artifactId>opus-java</artifactId>
+        </exclusion>
+
+        <exclusion>
+          <groupId>com.google.crypto.tink</groupId>
+          <artifactId>tink</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>6.0.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
