@@ -1,9 +1,9 @@
-<h1 align="center">discord-html-transcript-api</h1>
+<h1 align="center">discord-html-transcript-jda</h1>
 
 <p align="center">
     <strong>A Discord HTML transcript generator that preserves your favorite Discord styles</strong>
     <br>
-    <strong>For <a href="https://github.com/discord-jda/JDA">Java Discord API</a></strong>
+    <strong><a href="https://github.com/omardiaadev/discord-html-transcript-api">discord-html-transcript-api</a> wrapper for <a href="https://github.com/discord-jda/JDA">Java Discord API</a></strong>
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@
 
 ## About
 
-This is a wrapper for [`discord-html-transcript-api`](https://github.com/omardiaadev/discord-html-transcript-api).
+This is a wrapper for @omardiaadev/discord-channel-html-transcript.
 
 ## Installation
 
@@ -41,7 +41,7 @@ implementation("dev.omardiaa:discord-html-transcript-jda:1.0.0")
 import dev.omardiaa.transcript.api.Transcript;
 import dev.omardiaa.transcript.jda.TranscriberClient;
 
-void main() {
+public static void main(String[] args) {
   TranscriberClient client = new TranscriberClient(jda);
 
   CompletableFuture<Transcript> transcript = client.transcribe(guildId, channelId);
