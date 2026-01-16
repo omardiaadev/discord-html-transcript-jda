@@ -13,7 +13,7 @@
 
 ## About
 
-This is a wrapper for @omardiaadev/discord-channel-html-transcript.
+This is a wrapper for omardiaadev/discord-channel-html-transcript.
 
 ## Installation
 
