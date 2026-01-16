@@ -3,7 +3,7 @@
 <p align="center">
     <strong>A Discord HTML transcript generator that preserves your favorite Discord styles</strong>
     <br>
-    <strong><a href="https://github.com/omardiaadev/discord-html-transcript-api">discord-html-transcript-api</a> wrapper for <a href="https://github.com/discord-jda/JDA">Java Discord API</a></strong>
+    <strong><a href="https://github.com/discord-jda/JDA">JDA</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript-api">discord-html-transcript-api</a></strong>
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@
 
 ## About
 
-This is a wrapper for omardiaadev/discord-channel-html-transcript.
+This is a wrapper for [`discord-html-transcript-api`](https://github.com/omardiaadev/discord-html-transcript-api).
 
 ## Installation
 

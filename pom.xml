@@ -9,7 +9,7 @@
   <version>1.0.0</version>
 
   <name>discord-html-transcript-jda</name>
-  <description>discord-html-transcript-api Wrapper for Java Discord API.</description>
+  <description>JDA wrapper for discord-html-transcript-api</description>
   <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
 
   <licenses>
