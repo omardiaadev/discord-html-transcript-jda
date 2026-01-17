@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
@@ -61,22 +60,23 @@ class TranscriberClientTest {
   void transcribe() throws IOException {
     LOGGER.info("Started");
 
-    CompletableFuture<Transcript> transcriptFuture = new TranscriberClient(jda)
-      .transcribe(DISCORD_GUILD_ID, DISCORD_CHANNEL_ID)
-      .thenApplyAsync(t -> {
-        LOGGER.info("Finished");
-        return t;
-      });
+    Transcript transcript = assertTimeout(
+      Duration.ofMinutes(3),
+      () -> new TranscriberClient(jda)
+        .transcribe(DISCORD_GUILD_ID, DISCORD_CHANNEL_ID)
+        .thenApply(t -> {
+          LOGGER.info("Finished");
+          return t;
+        })
+        .join());
 
-    Transcript transcript = assertTimeout(Duration.ofMinutes(3), transcriptFuture::join);
+    Path dir = Paths.get("target");
+    Files.createDirectories(dir);
+    Path filePath = dir.resolve("transcript.html");
 
-    Path tempDir = Paths.get("target");
-    Files.createDirectories(tempDir);
-    Path tempFilePath = tempDir.resolve("transcript.html");
-
-    try (FileOutputStream fos = new FileOutputStream(tempFilePath.toFile())) {
+    try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
       fos.write(transcript.getByteArray());
-      LOGGER.info("file://{}", tempFilePath.toAbsolutePath());
+      LOGGER.info("file://{}", filePath.toAbsolutePath());
     }
 
     assertNotNull(transcript);
