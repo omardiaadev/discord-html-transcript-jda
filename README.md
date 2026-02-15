@@ -3,48 +3,58 @@
 <p align="center">
     <strong>A Discord HTML transcript generator that preserves your favorite Discord styles</strong>
     <br>
-    <strong><a href="https://github.com/discord-jda/JDA">JDA</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript-api">discord-html-transcript-api</a></strong>
+    <strong>For <a href="https://github.com/discord-jda/JDA">JDA</a> Users</strong>
 </p>
 
 <p align="center">
-    <a href="https://central.sonatype.com/artifact/dev.omardiaa/discord-html-transcript-jda"><img alt="Maven Version" src="https://img.shields.io/maven-central/v/dev.omardiaa/discord-html-transcript-jda?label=Maven&color=0055D2&labelColor=0055D2"/></a>
-    <a href="https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/omardiaadev/discord-html-transcript-jda?label=License&color=0055D2&labelColor=0055D2"/></a>
+    <a href="https://central.sonatype.com/artifact/dev.omardiaa/discord-html-transcript-jda"><img alt="Maven Version" src="https://img.shields.io/maven-central/v/dev.omardiaa/discord-html-transcript-jda?label=Maven&labelColor=0055D2&color=FFFFFF"/></a>
+    <a href="https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/omardiaadev/discord-html-transcript-jda?label=License&labelColor=0055D2&color=FFFFFF"/></a>
 </p>
 
 ## About
 
-This is a wrapper for [`discord-html-transcript-api`](https://github.com/omardiaadev/discord-html-transcript-api).
+`discord-html-transcript-jda` is a JDA (Java Discord API) wrapper for [discord-html-transcript](https://github.com/omardiaadev/discord-html-transcript).
 
-## Installation
+<details>
+    <summary><strong>Contents</strong></summary>
+    <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#usage">Usage</a></li>
+    </ul>
+</details>
 
-##### Requirements
+## Getting Started
 
-- **Java 21+**
+### Requirements
+
+- **Java 17+**
+
+### Installation
 
 ```xml
 
 <dependency>
   <groupId>dev.omardiaa</groupId>
   <artifactId>discord-html-transcript-jda</artifactId>
-  <version>1.0.0</version>
+  <version>0.1.0-beta.1</version>
 </dependency>
 ```
 
 ```kts
 
-implementation("dev.omardiaa:discord-html-transcript-jda:1.0.0")
+implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.1")
 ```
 
-## How To Use
+## Usage
 
 ```java
-import dev.omardiaa.transcript.api.Transcript;
-import dev.omardiaa.transcript.jda.TranscriberClient;
+import dev.omardiaa.transcript.jda.model.JDATranscript;
+import dev.omardiaa.transcript.jda.service.TranscriberClient;
 
 public static void main(String[] args) {
   TranscriberClient client = new TranscriberClient(jda);
 
-  CompletableFuture<Transcript> transcript = client.transcribe(guildId, channelId);
+  CompletableFuture<JDATranscript> transcript = client.transcribe(channel);
 }
 ```
 

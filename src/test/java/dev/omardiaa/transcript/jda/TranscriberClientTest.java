@@ -1,8 +1,10 @@
 package dev.omardiaa.transcript.jda;
 
-import dev.omardiaa.transcript.api.Transcript;
+import dev.omardiaa.transcript.jda.model.JDATranscript;
+import dev.omardiaa.transcript.jda.service.TranscriberClient;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,22 +25,21 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 /**
  * Integration test to verify transcript generation.
- * <p> Additionally, this will generate a {@code transcript.html}
+ * <br>
+ * Additionally, this will generate a {@code transcript.html}
  * of the generated transcript under {@code /target} directory.
  *
- * @apiNote This test will only run when all {@link #DISCORD_BOT_TOKEN}, {@link #DISCORD_GUILD_ID}, and
- * {@link #DISCORD_CHANNEL_ID}
+ * @apiNote This test will only run when both {@link #DISCORD_BOT_TOKEN} and {@link #DISCORD_CHANNEL_ID}
  * environment variables are specified.
  */
 @EnabledIfEnvironmentVariables({
   @EnabledIfEnvironmentVariable(named = "DISCORD_BOT_TOKEN", matches = ".+"),
-  @EnabledIfEnvironmentVariable(named = "DISCORD_GUILD_ID", matches = ".+"),
-  @EnabledIfEnvironmentVariable(named = "DISCORD_CHANNEL_ID", matches = ".+")})
+  @EnabledIfEnvironmentVariable(named = "DISCORD_CHANNEL_ID", matches = ".+")
+})
 class TranscriberClientTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(TranscriberClientTest.class);
 
   private static final String DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
-  private static final String DISCORD_GUILD_ID = System.getenv("DISCORD_GUILD_ID");
   private static final String DISCORD_CHANNEL_ID = System.getenv("DISCORD_CHANNEL_ID");
 
   private static JDA jda;
@@ -60,10 +60,14 @@ class TranscriberClientTest {
   void transcribe() throws IOException {
     LOGGER.info("Started");
 
-    Transcript transcript = assertTimeout(
+    TextChannel channel = jda.getTextChannelById(DISCORD_CHANNEL_ID);
+
+    assertNotNull(channel);
+
+    JDATranscript transcript = assertTimeout(
       Duration.ofMinutes(3),
       () -> new TranscriberClient(jda)
-        .transcribe(DISCORD_GUILD_ID, DISCORD_CHANNEL_ID)
+        .transcribe(channel)
         .thenApply(t -> {
           LOGGER.info("Finished");
           return t;
@@ -74,10 +78,8 @@ class TranscriberClientTest {
     Files.createDirectories(dir);
     Path filePath = dir.resolve("transcript.html");
 
-    try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
-      fos.write(transcript.getByteArray());
-      LOGGER.info("file://{}", filePath.toAbsolutePath());
-    }
+    transcript.toFile(filePath.toFile());
+    LOGGER.info("Transcript: file://{}", filePath.toAbsolutePath());
 
     assertNotNull(transcript);
   }

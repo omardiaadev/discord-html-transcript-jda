@@ -1,9 +1,10 @@
-package dev.omardiaa.transcript.jda;
+package dev.omardiaa.transcript.jda.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import dev.omardiaa.transcript.api.schema.payload.Channel;
-import dev.omardiaa.transcript.api.schema.payload.Guild;
-import dev.omardiaa.transcript.api.schema.payload.Message;
+import dev.omardiaa.transcript.core.model.payload.Channel;
+import dev.omardiaa.transcript.core.model.payload.Guild;
+import dev.omardiaa.transcript.core.model.payload.Message;
+import dev.omardiaa.transcript.jda.internal.JacksonRestAction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.Route;
 import org.jspecify.annotations.NullMarked;
@@ -14,10 +15,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-class TranscriberClientFetcher {
+class TranscriberFetcher {
   private final JDA jda;
 
-  TranscriberClientFetcher(JDA jda) {
+  TranscriberFetcher(JDA jda) {
     this.jda = jda;
   }
 
@@ -58,7 +59,7 @@ class TranscriberClientFetcher {
           return CompletableFuture.completedStage(accumulator);
         }
 
-        return getMessagePage(channelId, batch.getLast().getId(), accumulator);
+        return getMessagePage(channelId, batch.get(batch.size() - 1).getId(), accumulator);
       });
   }
 }

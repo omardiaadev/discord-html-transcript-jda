@@ -12,7 +12,7 @@ import org.jspecify.annotations.NullMarked;
 public final class JDATranscript extends AbstractTranscript {
   /**
    * @param output
-   *   Raw byte output of the transcribed channel.
+   *   The {@link Utf8ByteOutput} of the transcribed channel.
    */
   public JDATranscript(Utf8ByteOutput output) {
     super(output);
@@ -20,8 +20,11 @@ public final class JDATranscript extends AbstractTranscript {
 
   /**
    * Writes {@link Utf8ByteOutput#toByteArray()} into JDA's {@link FileUpload}.
+   * <p>
+   * The filename of this {@link FileUpload} is always {@code transcript.html},
+   * if you want to specify your own filename, see {@link #toFileUpload(String)}.
    *
-   * @return {@link FileUpload} to send directly in JDA interactions.
+   * @return {@link FileUpload} to send directly through JDA events.
    */
   public FileUpload toFileUpload() {
     return toFileUpload("transcript.html");
@@ -34,7 +37,7 @@ public final class JDATranscript extends AbstractTranscript {
    *   Name to use for the {@link FileUpload}.
    *   If {@code filename} does not end with {@code .html}, it will be automatically appended.
    *
-   * @return {@link FileUpload} to send directly in JDA interactions.
+   * @return {@link FileUpload} to send directly through JDA events.
    */
   public FileUpload toFileUpload(String filename) {
     return FileUpload.fromData(
