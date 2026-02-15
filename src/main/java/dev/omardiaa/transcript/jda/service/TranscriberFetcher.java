@@ -32,26 +32,22 @@ import java.util.concurrent.CompletableFuture;
 
 @NullMarked
 class TranscriberFetcher {
+  private static final TypeReference<Guild> GUILD_TYPE = new TypeReference<>() {};
+  private static final TypeReference<Channel> CHANNEL_TYPE = new TypeReference<>() {};
+  private static final TypeReference<List<Message>> MESSAGE_LIST_TYPE = new TypeReference<>() {};
+
   private final JDA jda;
 
   TranscriberFetcher(JDA jda) {
     this.jda = jda;
   }
 
-  CompletableFuture<Channel> getChannel(String channelId) {
-    return new JacksonRestAction<>(
-      jda,
-      Route.Channels.GET_CHANNEL.compile(channelId),
-      new TypeReference<Channel>() {})
-      .submit();
+  CompletableFuture<Guild> getGuild(String guildId) {
+    return new JacksonRestAction<>(jda, Route.Guilds.GET_GUILD.compile(guildId), GUILD_TYPE).submit();
   }
 
-  CompletableFuture<Guild> getGuild(String guildId) {
-    return new JacksonRestAction<>(
-      jda,
-      Route.Guilds.GET_GUILD.compile(guildId),
-      new TypeReference<Guild>() {})
-      .submit();
+  CompletableFuture<Channel> getChannel(String channelId) {
+    return new JacksonRestAction<>(jda, Route.Channels.GET_CHANNEL.compile(channelId), CHANNEL_TYPE).submit();
   }
 
   CompletableFuture<List<Message>> getMessages(String channelId) {
@@ -66,16 +62,16 @@ class TranscriberFetcher {
       route = route.withQueryParams("before", lastMessageId);
     }
 
-    return new JacksonRestAction<>(jda, route, new TypeReference<List<Message>>() {})
+    return new JacksonRestAction<>(jda, route, MESSAGE_LIST_TYPE)
       .submit()
-      .thenCompose(batch -> {
-        accumulator.addAll(batch);
+      .thenCompose(messages -> {
+        accumulator.addAll(messages);
 
-        if (batch.size() < 100) {
+        if (messages.size() < 100) {
           return CompletableFuture.completedStage(accumulator);
         }
 
-        return getMessagePage(channelId, batch.get(batch.size() - 1).getId(), accumulator);
+        return getMessagePage(channelId, messages.get(messages.size() - 1).getId(), accumulator);
       });
   }
 }
