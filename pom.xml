@@ -29,9 +29,9 @@
   </developers>
 
   <scm>
+    <connection>scm:git:git://github.com/omardiaadev/discord-html-transcript-jda.git</connection>
+    <developerConnection>scm:git:ssh://github.com:omardiaadev/discord-html-transcript-jda.git</developerConnection>
     <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
-    <connection>scm:git:git://github.com/omardiaadev/discord-html-transcript-jda</connection>
-    <developerConnection>scm:git:ssh:git@github.com:omardiaadev/discord-html-transcript-jda</developerConnection>
   </scm>
 
   <properties>
