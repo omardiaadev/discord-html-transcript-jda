@@ -14,6 +14,9 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The Transcriber Client used to generate the transcripts of a {@link GuildMessageChannel}.
+ */
 @NullMarked
 public class TranscriberClient {
   private final Transcriber transcriber;
