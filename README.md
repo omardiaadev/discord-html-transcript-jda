@@ -1,7 +1,7 @@
 <h1 align="center">discord-html-transcript-jda</h1>
 
 <p align="center">
-    <strong>Generate styled archives of your tickets and chats with ease</strong>
+    <strong>Generate styled archives for your tickets and chats with ease</strong>
     <br>
     <a href="https://github.com/discord-jda/JDA">Java Discord API</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript">discord-html-transcript</a>
 </p>
@@ -13,9 +13,10 @@
 </p>
 
 <details>
-    <summary><strong>Contents</strong></summary>
+    <summary>Contents</summary>
     <ul>
         <li><a href="#features">Features</a></li>
+        <li><a href="#preview">Preview</a></li>
         <li><a href="#getting-started">Getting Started</a></li>
         <li><a href="#usage">Usage</a></li>
     </ul>
@@ -23,17 +24,17 @@
 
 ## Features
 
-- **Beautiful UI:** Modern HTML/CSS styling that has the look and feel of the Discord desktop client.
+- **Beautiful UI:** Modern HTML/CSS that has the look and feel of the Discord desktop client.
 - **Asynchronous:** Built with `CompletableFuture` for non-blocking performance.
 - **JDA Integration:** Support for `FileUpload` making it easy to send transcripts with JDA.
-
-`discord-html-transcript-jda` is a JDA wrapper for [discord-html-transcript](https://github.com/omardiaadev/discord-html-transcript).
 
 ## Preview
 
 [Full Preview](https://htmlpreview.github.io/?https://github.com/omardiaadev/discord-html-transcript/blob/main/examples/example-transcript.html)
 
-![discord-html-transcript](https://res.cloudinary.com/omardiaadev/image/upload/v1771423142/discord-html-transcript_ocjq03.png)
+<a href="https://htmlpreview.github.io/?https://github.com/omardiaadev/discord-html-transcript/blob/main/examples/example-transcript.html">
+    <img alt="discord-html-transcript" src="https://res.cloudinary.com/omardiaadev/image/upload/v1771423142/discord-html-transcript_ocjq03.png"/>
+</a>
 
 ## Getting Started
 
@@ -84,9 +85,7 @@ public class SlashCommandListener extends ListenerAdapter {
   @Override
   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
     if (event.getName().equals("transcript")) {
-      CompletableFuture<JDATranscript> transcript = client.transcribe(channel);
-
-      client.transcribe(event.getChannel().asTextChannel())
+      client.transcribe(event.getChannel())
             .thenAccept(transcript -> {
               event.getHook().sendFiles(transcript.toFileUpload()).queue();
             })
@@ -101,7 +100,7 @@ public class SlashCommandListener extends ListenerAdapter {
 
 ## 💖 Support The Project
 
-If you found this package useful, please consider giving it a 🌟!
+If you found this useful, please consider giving it a 🌟!
 
 <a href="https://fiverr.com/skywolfxp"><img alt="Fiverr" src="https://img.shields.io/badge/-1DBF73?style=for-the-badge&logo=fiverr&logoColor=FFF&logoSize=auto"/></a>
 <a href="https://ko-fi.com/omardiaadev"><img alt="Ko-fi" src="https://img.shields.io/badge/ko--fi-FF6433?style=for-the-badge&logo=kofi&logoColor=FFF"/></a>
