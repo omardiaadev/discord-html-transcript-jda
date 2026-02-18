@@ -1,27 +1,39 @@
 <h1 align="center">discord-html-transcript-jda</h1>
 
 <p align="center">
-    <strong>A Discord HTML transcript generator that preserves your favorite Discord styles</strong>
+    <strong>Generate styled archives of your tickets and chats with ease</strong>
     <br>
-    <strong>For <a href="https://github.com/discord-jda/JDA">JDA</a> Users</strong>
+    <a href="https://github.com/discord-jda/JDA">Java Discord API</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript">discord-html-transcript</a>
 </p>
 
 <p align="center">
-    <a href="https://central.sonatype.com/artifact/dev.omardiaa/discord-html-transcript-jda"><img alt="Maven Version" src="https://img.shields.io/maven-central/v/dev.omardiaa/discord-html-transcript-jda?label=Maven&labelColor=0055D2&color=FFFFFF"/></a>
-    <a href="https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/omardiaadev/discord-html-transcript-jda?label=License&labelColor=0055D2&color=FFFFFF"/></a>
+    <a href="https://central.sonatype.com/artifact/dev.omardiaa/discord-html-transcript-jda"><img alt="Maven Version" src="https://img.shields.io/maven-central/v/dev.omardiaa/discord-html-transcript-jda?label=Maven&color=0055D2"/></a>
+    <a href="https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/omardiaadev/discord-html-transcript-jda?label=License&color=0055D2"/></a>
+    <a href="https://discord.gg/fWtQjEJgWX"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=FFF&color=5865F2"/></a>
 </p>
-
-## About
-
-`discord-html-transcript-jda` is a JDA (Java Discord API) wrapper for [discord-html-transcript](https://github.com/omardiaadev/discord-html-transcript).
 
 <details>
     <summary><strong>Contents</strong></summary>
     <ul>
+        <li><a href="#features">Features</a></li>
         <li><a href="#getting-started">Getting Started</a></li>
         <li><a href="#usage">Usage</a></li>
     </ul>
 </details>
+
+## Features
+
+- **Beautiful UI:** Modern HTML/CSS styling that has the look and feel of the Discord desktop client.
+- **Asynchronous:** Built with `CompletableFuture` for non-blocking performance.
+- **JDA Integration:** Support for `FileUpload` making it easy to send transcripts with JDA.
+
+`discord-html-transcript-jda` is a JDA wrapper for [discord-html-transcript](https://github.com/omardiaadev/discord-html-transcript).
+
+## Preview
+
+[Full Preview](https://htmlpreview.github.io/?https://github.com/omardiaadev/discord-html-transcript/blob/main/examples/example-transcript.html)
+
+![discord-html-transcript](https://res.cloudinary.com/omardiaadev/image/upload/v1771423142/discord-html-transcript_ocjq03.png)
 
 ## Getting Started
 
@@ -30,6 +42,8 @@
 - **Java 17+**
 
 ### Installation
+
+#### Maven
 
 ```xml
 
@@ -40,25 +54,54 @@
 </dependency>
 ```
 
-```kts
+#### Gradle
+
+```kotlin
 
 implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.1")
 ```
 
 ## Usage
 
+### Example: Slash Command
+
 ```java
 import dev.omardiaa.transcript.jda.model.JDATranscript;
 import dev.omardiaa.transcript.jda.service.TranscriberClient;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-public static void main(String[] args) {
-  TranscriberClient client = new TranscriberClient(jda);
+import java.util.concurrent.CompletableFuture;
 
-  CompletableFuture<JDATranscript> transcript = client.transcribe(channel);
+public class SlashCommandListener extends ListenerAdapter {
+  private final TranscriberClient client;
+
+  public SlashCommandListener(JDA jda) {
+    this.client = new TranscriberClient(jda);
+  }
+
+  @Override
+  public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    if (event.getName().equals("transcript")) {
+      CompletableFuture<JDATranscript> transcript = client.transcribe(channel);
+
+      client.transcribe(event.getChannel().asTextChannel())
+            .thenAccept(transcript -> {
+              event.getHook().sendFiles(transcript.toFileUpload()).queue();
+            })
+            .exceptionally(throwable -> {
+              event.getHook().sendMessage("Failed to generate transcript!").queue();
+              return null;
+            });
+    }
+  }
 }
 ```
 
-## Enjoying The Package? Give it A Star!
+## 💖 Support The Project
+
+If you found this package useful, please consider giving it a 🌟!
 
 <a href="https://fiverr.com/skywolfxp"><img alt="Fiverr" src="https://img.shields.io/badge/-1DBF73?style=for-the-badge&logo=fiverr&logoColor=FFF&logoSize=auto"/></a>
-<a href="https://discord.gg/fWtQjEJgWX"><img alt="Discord" src="https://img.shields.io/discord/1055244032105787472?style=for-the-badge&logo=discord&logoColor=FFF&logoSize=auto&label=%20&color=5865F2"/></a>
+<a href="https://ko-fi.com/omardiaadev"><img alt="Ko-fi" src="https://img.shields.io/badge/ko--fi-FF6433?style=for-the-badge&logo=kofi&logoColor=FFF"/></a>
