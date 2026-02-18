@@ -67,14 +67,6 @@ implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.1")
 ### Example: Slash Command
 
 ```java
-import dev.omardiaa.transcript.jda.model.JDATranscript;
-import dev.omardiaa.transcript.jda.service.TranscriberClient;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-
-import java.util.concurrent.CompletableFuture;
-
 public class SlashCommandListener extends ListenerAdapter {
   private final TranscriberClient client;
 
