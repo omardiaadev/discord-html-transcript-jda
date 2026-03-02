@@ -15,7 +15,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
           server-id: central
           server-username: SERVER_USERNAME
           server-password: SERVER_PASSWORD
