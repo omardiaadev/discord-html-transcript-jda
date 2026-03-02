@@ -28,20 +28,23 @@ import org.jspecify.annotations.NullMarked;
 import java.io.IOException;
 
 /**
- * {@link RestAction} implementation to fetch raw response objects from the Discord API.
+ * A {@link RestAction} implementation for fetching raw response objects from the Discord API.
  *
  * @param <T>
- *   The generic to use for deserialization of the raw response object.
+ *   the generic to use during deserialization of the raw response object.
  */
 @NullMarked
 public class JacksonRestAction<T> extends RestActionImpl<T> {
   /**
    * @param jda
-   *   The JDA instance to use for fetching.
+   *   the JDA instance used for fetching.
    * @param route
-   *   The route to fetch.
+   *   the Discord API route to fetch.
    * @param responseType
-   *   The type to use for deserialization.
+   *   the type used during deserialization.
+   *
+   * @throws ParsingException
+   *   if any error occurs during deserialization of the JSON response.
    */
   public JacksonRestAction(JDA jda, Route.CompiledRoute route, TypeReference<T> responseType) {
     super(
@@ -49,7 +52,7 @@ public class JacksonRestAction<T> extends RestActionImpl<T> {
         try {
           return TranscriberConfig.getObjectMapper().readValue(response.getString(), responseType);
         } catch (IOException e) {
-          throw new ParsingException("Failed to parse JSON response using Jackson", e);
+          throw new ParsingException("Failed to deserialize JSON response.", e);
         }
       });
   }

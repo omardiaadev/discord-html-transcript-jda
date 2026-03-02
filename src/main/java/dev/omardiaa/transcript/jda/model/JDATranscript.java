@@ -22,13 +22,13 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * {@link AbstractTranscript} implementation for JDA.
+ * An extended {@link AbstractTranscript} implementation supporting JDA's {@link FileUpload}.
  */
 @NullMarked
 public final class JDATranscript extends AbstractTranscript {
   /**
    * @param output
-   *   The {@link Utf8ByteOutput} of the transcribed channel.
+   *   the {@link Utf8ByteOutput} of the transcribed channel.
    */
   public JDATranscript(Utf8ByteOutput output) {
     super(output);

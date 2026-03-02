@@ -17,6 +17,7 @@
 package dev.omardiaa.transcript.jda.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import dev.omardiaa.transcript.core.model.Payload;
 import dev.omardiaa.transcript.core.model.payload.Channel;
 import dev.omardiaa.transcript.core.model.payload.Guild;
 import dev.omardiaa.transcript.core.model.payload.Message;
@@ -30,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A class for fetching the required {@link Payload}.
+ */
 @NullMarked
 class TranscriberFetcher {
   private static final TypeReference<Guild> GUILD_TYPE = new TypeReference<>() {};

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * The Transcriber Client used to generate the transcripts of a {@link GuildMessageChannel}.
+ * A class for generating HTML transcripts.
  */
 @NullMarked
 public class TranscriberClient {
@@ -41,10 +41,10 @@ public class TranscriberClient {
 
   /**
    * @param jda
-   *   The {@link JDA} instance used to fetch the {@link Payload}.
+   *   the {@link JDA} instance used to fetch the {@link Payload}.
    *
    * @throws IllegalStateException
-   *   If the specified {@code jda} instance disables {@link GatewayIntent#MESSAGE_CONTENT}.
+   *   if the specified {@code jda} instance disables {@link GatewayIntent#MESSAGE_CONTENT}.
    */
   public TranscriberClient(JDA jda) {
     if (!jda.getGatewayIntents().contains(GatewayIntent.MESSAGE_CONTENT)) {
@@ -57,7 +57,7 @@ public class TranscriberClient {
 
   /**
    * @param channel
-   *   The {@link GuildMessageChannel} to transcribe.
+   *   the {@link GuildMessageChannel} to transcribe.
    *
    * @return {@link CompletableFuture} of {@link JDATranscript}.
    */
