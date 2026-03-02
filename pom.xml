@@ -25,7 +25,7 @@
   <version>0.1.0-beta.1</version>
 
   <name>discord-html-transcript-jda</name>
-  <description>A JDA (Java Discord API) wrapper for discord-html-transcript</description>
+  <description>JDA (Java Discord API) wrapper for discord-html-transcript</description>
   <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
 
   <licenses>
@@ -59,13 +59,13 @@
     <dependency>
       <groupId>dev.omardiaa</groupId>
       <artifactId>discord-html-transcript-core</artifactId>
-      <version>0.1.0-beta.1</version>
+      <version>0.1.0-beta.2</version>
     </dependency>
 
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>6.3.0</version>
+      <version>6.3.1</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>6.0.2</version>
+      <version>6.0.3</version>
       <scope>test</scope>
     </dependency>
 
