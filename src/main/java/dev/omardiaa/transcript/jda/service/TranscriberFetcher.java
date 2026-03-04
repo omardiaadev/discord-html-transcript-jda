@@ -23,11 +23,13 @@ import dev.omardiaa.transcript.core.model.payload.Guild;
 import dev.omardiaa.transcript.core.model.payload.Message;
 import dev.omardiaa.transcript.jda.internal.JacksonRestAction;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.requests.Route;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,20 +48,27 @@ class TranscriberFetcher {
     this.jda = jda;
   }
 
-  CompletableFuture<Guild> getGuild(String guildId) {
-    return new JacksonRestAction<>(jda, Route.Guilds.GET_GUILD.compile(guildId), GUILD_TYPE).submit();
+  CompletableFuture<Guild> getGuild(GuildMessageChannel channel) {
+    return new JacksonRestAction<>(
+      jda,
+      Route.Guilds.GET_GUILD.compile(channel.getGuild().getId()),
+      GUILD_TYPE).submit();
   }
 
-  CompletableFuture<Channel> getChannel(String channelId) {
-    return new JacksonRestAction<>(jda, Route.Channels.GET_CHANNEL.compile(channelId), CHANNEL_TYPE).submit();
+  CompletableFuture<Channel> getChannel(GuildMessageChannel channel) {
+    return new JacksonRestAction<>(jda, Route.Channels.GET_CHANNEL.compile(channel.getId()), CHANNEL_TYPE).submit();
   }
 
-  CompletableFuture<List<Message>> getMessages(String channelId) {
-    return getMessagePage(channelId, null, new ArrayList<>());
+  CompletableFuture<List<Message>> getMessages(GuildMessageChannel channel) {
+    return getMessages(channel.getId(), new ArrayList<>(), null)
+      .thenApply(messages -> {
+        Collections.reverse(messages);
+        return messages;
+      });
   }
 
-  private CompletableFuture<List<Message>> getMessagePage(
-    String channelId, @Nullable String lastMessageId, List<Message> accumulator) {
+  private CompletableFuture<List<Message>> getMessages(
+    String channelId, List<Message> messages, @Nullable String lastMessageId) {
     Route.CompiledRoute route = Route.Messages.GET_MESSAGE_HISTORY.compile(channelId).withQueryParams("limit", "100");
 
     if (lastMessageId != null) {
@@ -68,14 +77,14 @@ class TranscriberFetcher {
 
     return new JacksonRestAction<>(jda, route, MESSAGE_LIST_TYPE)
       .submit()
-      .thenCompose(messages -> {
-        accumulator.addAll(messages);
+      .thenCompose(batch -> {
+        messages.addAll(batch);
 
-        if (messages.size() < 100) {
-          return CompletableFuture.completedStage(accumulator);
+        if (batch.size() < 100) {
+          return CompletableFuture.completedStage(messages);
         }
 
-        return getMessagePage(channelId, messages.get(messages.size() - 1).getId(), accumulator);
+        return getMessages(channelId, messages, batch.get(batch.size() - 1).getId());
       });
   }
 }

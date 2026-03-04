@@ -1,7 +1,7 @@
 <h1 align="center">discord-html-transcript-jda</h1>
 
 <p align="center">
-    <strong>Generate styled archives for your tickets and chats with ease</strong>
+    <strong>Generate natively styled logs for your Discord chats with JDA</strong>
     <br>
     <a href="https://github.com/discord-jda/JDA">Java Discord API</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript">discord-html-transcript</a>
 </p>
@@ -30,17 +30,15 @@
 
 ## Preview
 
-[Full Preview](https://htmlpreview.github.io/?https://github.com/omardiaadev/discord-html-transcript/blob/main/examples/example-transcript.html)
-
 <a href="https://htmlpreview.github.io/?https://github.com/omardiaadev/discord-html-transcript/blob/main/examples/example-transcript.html">
     <img alt="discord-html-transcript" src="https://res.cloudinary.com/omardiaadev/image/upload/v1771423142/discord-html-transcript_ocjq03.png"/>
 </a>
 
 ## Getting Started
 
-### Requirements
+### Prerequisites
 
-- **Java 17+**
+- Java 17+
 
 ### Installation
 
@@ -67,6 +65,11 @@ implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.1")
 ### Example: Slash Command
 
 ```java
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import dev.omardiaa.transcript.jda.service.TranscriberClient;
+
 public class SlashCommandListener extends ListenerAdapter {
   private final TranscriberClient client;
 
@@ -90,7 +93,7 @@ public class SlashCommandListener extends ListenerAdapter {
 }
 ```
 
-## 💖 Support The Project
+## 🌟 Support The Project
 
 If you found this useful, please consider giving it a 🌟!
 

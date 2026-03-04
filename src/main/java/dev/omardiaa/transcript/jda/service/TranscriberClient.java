@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -62,17 +61,9 @@ public class TranscriberClient {
    * @return {@link CompletableFuture} of {@link JDATranscript}.
    */
   public CompletableFuture<JDATranscript> transcribe(GuildMessageChannel channel) {
-    String guildId = channel.getGuild().getId();
-    String channelId = channel.getId();
-
-    CompletableFuture<Guild> guildFuture = transcriberFetcher.getGuild(guildId);
-    CompletableFuture<Channel> channelFuture = transcriberFetcher.getChannel(channelId);
-    CompletableFuture<List<Message>> messagesFuture = transcriberFetcher
-      .getMessages(channelId)
-      .thenApply(messages -> {
-        Collections.reverse(messages);
-        return messages;
-      });
+    CompletableFuture<Guild> guildFuture = transcriberFetcher.getGuild(channel);
+    CompletableFuture<Channel> channelFuture = transcriberFetcher.getChannel(channel);
+    CompletableFuture<List<Message>> messagesFuture = transcriberFetcher.getMessages(channel);
 
     return CompletableFuture
       .allOf(channelFuture, guildFuture, messagesFuture)

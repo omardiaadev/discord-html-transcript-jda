@@ -33,19 +33,18 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 /**
- * Integration test to verify transcript generation.
+ * An integration test to verify transcript generation.
  * <br>
- * Additionally, this will generate a {@code transcript.html}
- * of the generated transcript under {@code /target} directory.
+ * Additionally, this will generate a {@code transcript.html} of the specified channel under the {@code /target}
+ * directory.
  *
- * @apiNote This test will only run when both {@link #DISCORD_BOT_TOKEN} and {@link #DISCORD_CHANNEL_ID}
+ * @apiNote this test will only run when both {@link #DISCORD_BOT_TOKEN} and {@link #DISCORD_CHANNEL_ID}
  * environment variables are specified.
  */
 @EnabledIfEnvironmentVariables({
@@ -54,7 +53,6 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 })
 class TranscriberClientTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(TranscriberClientTest.class);
-
   private static final String DISCORD_BOT_TOKEN = System.getenv("DISCORD_BOT_TOKEN");
   private static final String DISCORD_CHANNEL_ID = System.getenv("DISCORD_CHANNEL_ID");
 
@@ -73,8 +71,8 @@ class TranscriberClientTest {
   }
 
   @Test
-  void transcribe() throws IOException {
-    LOGGER.info("Started");
+  void transcribeGeneratesTranscript() throws IOException {
+    LOGGER.debug("Transcribing...");
 
     TextChannel channel = jda.getTextChannelById(DISCORD_CHANNEL_ID);
 
@@ -85,18 +83,16 @@ class TranscriberClientTest {
       () -> new TranscriberClient(jda)
         .transcribe(channel)
         .thenApply(t -> {
-          LOGGER.info("Finished");
+          LOGGER.debug("Transcribed '#{}'.", channel.getName());
           return t;
         })
         .join());
 
-    Path dir = Paths.get("target");
+    Path dir = Path.of("target");
     Files.createDirectories(dir);
     Path filePath = dir.resolve("transcript.html");
 
     transcript.toFile(filePath.toFile());
     LOGGER.info("Transcript: file://{}", filePath.toAbsolutePath());
-
-    assertNotNull(transcript);
   }
 }
