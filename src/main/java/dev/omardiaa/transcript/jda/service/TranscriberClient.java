@@ -42,6 +42,8 @@ public class TranscriberClient {
   private final TranscriberFetcher transcriberFetcher;
 
   /**
+   * Constructs a new {@link TranscriberClient} instance configured with the specified {@code jda} instance.
+   *
    * @param jda
    *   the {@link JDA} instance used to fetch the {@link Payload}.
    *
@@ -58,12 +60,16 @@ public class TranscriberClient {
   }
 
   /**
+   * Provides a {@link CompletableFuture} of the transcript generation task for the specified {@code channel}.
+   * <p>
+   * This {@link CompletableFuture} completes exceptionally with {@link TranscriberPermissionException}
+   * if the JDA instance used does not have {@link Permission#VIEW_CHANNEL} or {@link Permission#MESSAGE_HISTORY}
+   * for the specified {@code channel}.
+   *
    * @param channel
    *   the {@link GuildMessageChannel} to transcribe.
    *
-   * @return {@link CompletableFuture} of a {@link JDATranscript}, or completes exceptionally with a
-   * {@link TranscriberPermissionException} if the JDA instance used does not have {@link Permission#VIEW_CHANNEL}
-   * or {@link Permission#MESSAGE_HISTORY} for the specified {@code channel}.
+   * @return {@link CompletableFuture} of a {@link JDATranscript}.
    */
   public CompletableFuture<JDATranscript> transcribe(GuildMessageChannel channel) {
     SelfMember member = channel.getGuild().getSelfMember();

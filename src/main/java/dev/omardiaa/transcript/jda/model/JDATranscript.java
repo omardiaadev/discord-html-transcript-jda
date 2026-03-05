@@ -18,15 +18,18 @@ package dev.omardiaa.transcript.jda.model;
 
 import dev.omardiaa.transcript.core.model.AbstractTranscript;
 import gg.jte.output.Utf8ByteOutput;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * An extended {@link AbstractTranscript} implementation supporting JDA's {@link FileUpload}.
+ * A {@link JDA} implementation of {@link AbstractTranscript} that provides utilities for JDA's {@link FileUpload}.
  */
 @NullMarked
 public final class JDATranscript extends AbstractTranscript {
   /**
+   * Constructs a new {@link JDATranscript} instance with the provided byte output.
+   *
    * @param output
    *   the {@link Utf8ByteOutput} of the transcribed channel.
    */
@@ -38,7 +41,7 @@ public final class JDATranscript extends AbstractTranscript {
    * Writes {@link Utf8ByteOutput#toByteArray()} into JDA's {@link FileUpload}.
    * <p>
    * The filename of this {@link FileUpload} is always {@code transcript.html},
-   * if you want to specify your own filename, see {@link #toFileUpload(String)}.
+   * if you want to specify a custom filename, use {@link #toFileUpload(String)}.
    *
    * @return {@link FileUpload} to send directly through JDA events.
    */
@@ -51,13 +54,13 @@ public final class JDATranscript extends AbstractTranscript {
    *
    * @param filename
    *   Name to use for the {@link FileUpload}.
-   *   If {@code filename} does not end with {@code .html}, it will be automatically appended.
+   *   If {@code filename} does not end with {@code .html}, it will be appended automatically.
    *
    * @return {@link FileUpload} to send directly through JDA events.
    */
   public FileUpload toFileUpload(String filename) {
     return FileUpload.fromData(
-      this.getOutput().toByteArray(),
+      getOutput().toByteArray(),
       filename.endsWith(".html") ? filename : filename + ".html");
   }
 }
