@@ -21,8 +21,11 @@ import dev.omardiaa.transcript.core.model.payload.Channel;
 import dev.omardiaa.transcript.core.model.payload.Guild;
 import dev.omardiaa.transcript.core.model.payload.Message;
 import dev.omardiaa.transcript.core.service.Transcriber;
+import dev.omardiaa.transcript.jda.exception.TranscriberPermissionException;
 import dev.omardiaa.transcript.jda.model.JDATranscript;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.SelfMember;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jspecify.annotations.NullMarked;
@@ -31,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * A class for generating HTML transcripts.
+ * A class for generating the transcripts.
  */
 @NullMarked
 public class TranscriberClient {
@@ -58,17 +61,29 @@ public class TranscriberClient {
    * @param channel
    *   the {@link GuildMessageChannel} to transcribe.
    *
-   * @return {@link CompletableFuture} of {@link JDATranscript}.
+   * @return {@link CompletableFuture} of a {@link JDATranscript}, or completes exceptionally with a
+   * {@link TranscriberPermissionException} if the JDA instance used does not have {@link Permission#VIEW_CHANNEL}
+   * or {@link Permission#MESSAGE_HISTORY} for the specified {@code channel}.
    */
   public CompletableFuture<JDATranscript> transcribe(GuildMessageChannel channel) {
+    SelfMember member = channel.getGuild().getSelfMember();
+
+    if (!member.hasPermission(channel, Permission.VIEW_CHANNEL)) {
+      return CompletableFuture.failedFuture(new TranscriberPermissionException(channel, Permission.VIEW_CHANNEL));
+    }
+
+    if (!member.hasPermission(channel, Permission.MESSAGE_HISTORY)) {
+      return CompletableFuture.failedFuture(new TranscriberPermissionException(channel, Permission.MESSAGE_HISTORY));
+    }
+
     CompletableFuture<Guild> guildFuture = transcriberFetcher.getGuild(channel);
     CompletableFuture<Channel> channelFuture = transcriberFetcher.getChannel(channel);
     CompletableFuture<List<Message>> messagesFuture = transcriberFetcher.getMessages(channel);
 
     return CompletableFuture
-      .allOf(channelFuture, guildFuture, messagesFuture)
+      .allOf(guildFuture, channelFuture, messagesFuture)
       .thenApply(v -> new Payload(guildFuture.join(), channelFuture.join(), messagesFuture.join(), null))
-      .thenComposeAsync(transcriber::transcribe)
+      .thenCompose(transcriber::transcribe)
       .thenApply(JDATranscript::new);
   }
 }

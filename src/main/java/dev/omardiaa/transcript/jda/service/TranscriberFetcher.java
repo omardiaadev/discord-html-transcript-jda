@@ -52,7 +52,8 @@ class TranscriberFetcher {
     return new JacksonRestAction<>(
       jda,
       Route.Guilds.GET_GUILD.compile(channel.getGuild().getId()),
-      GUILD_TYPE).submit();
+      GUILD_TYPE)
+      .submit();
   }
 
   CompletableFuture<Channel> getChannel(GuildMessageChannel channel) {

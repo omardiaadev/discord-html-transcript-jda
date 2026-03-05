@@ -16,6 +16,7 @@
 
 package dev.omardiaa.transcript.jda;
 
+import dev.omardiaa.transcript.jda.exception.TranscriberPermissionException;
 import dev.omardiaa.transcript.jda.model.JDATranscript;
 import dev.omardiaa.transcript.jda.service.TranscriberClient;
 import net.dv8tion.jda.api.JDA;
@@ -72,7 +73,7 @@ class TranscriberClientTest {
 
   @Test
   void transcribeGeneratesTranscript() throws IOException {
-    LOGGER.debug("Transcribing...");
+    LOGGER.info("Transcribing...");
 
     TextChannel channel = jda.getTextChannelById(DISCORD_CHANNEL_ID);
 
@@ -82,11 +83,21 @@ class TranscriberClientTest {
       Duration.ofMinutes(3),
       () -> new TranscriberClient(jda)
         .transcribe(channel)
-        .thenApply(t -> {
-          LOGGER.debug("Transcribed '#{}'.", channel.getName());
-          return t;
+        .whenComplete((t, throwable) -> {
+          if (throwable == null) {
+            LOGGER.info("Transcribed '#{}'.", channel.getName());
+            return;
+          }
+
+          if (throwable instanceof TranscriberPermissionException ex) {
+            LOGGER.info("Failed to generate transcript due to missing '{}' permission.", ex.getPermission().getName());
+          } else {
+            LOGGER.info("Failed to generate transcript due to unknown exception.");
+          }
         })
         .join());
+
+    assertNotNull(transcript);
 
     Path dir = Path.of("target");
     Files.createDirectories(dir);

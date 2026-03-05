@@ -1,7 +1,7 @@
 <h1 align="center">discord-html-transcript-jda</h1>
 
 <p align="center">
-    <strong>Generate natively styled logs for your Discord chats with JDA</strong>
+    <strong>Generate natively styled logs for your Discord chats using JDA</strong>
     <br>
     <a href="https://github.com/discord-jda/JDA">Java Discord API</a> wrapper for <a href="https://github.com/omardiaadev/discord-html-transcript">discord-html-transcript</a>
 </p>
@@ -17,8 +17,21 @@
     <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#preview">Preview</a></li>
-        <li><a href="#getting-started">Getting Started</a></li>
-        <li><a href="#usage">Usage</a></li>
+        <li>
+            <a href="#getting-started">Getting Started</a>
+            <ul>
+                <li><a href="#prerequisites">Prerequisites</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#installation">Installation</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#usage">Usage</a>
+            <ul>
+                <li><a href="#example-slash-command">Example: Slash Command</a></li>
+            </ul>
+        </li>
+        <li><a href="#-support-the-project">🌟 Support</a></li>
     </ul>
 </details>
 
@@ -40,9 +53,13 @@
 
 - Java 17+
 
+### Configuration
+
+- The [Message Content Intent](https://docs.discord.com/developers/events/gateway#message-content-intent) is required.
+
 ### Installation
 
-#### Maven
+<img alt="Maven" src="https://img.shields.io/badge/Maven-C71A36?logo=apachemaven">
 
 ```xml
 
@@ -53,7 +70,7 @@
 </dependency>
 ```
 
-#### Gradle
+<img alt="Gradle" src="https://img.shields.io/badge/Gradle-02303A?logo=gradle">
 
 ```kotlin
 
@@ -69,6 +86,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import dev.omardiaa.transcript.jda.service.TranscriberClient;
+import dev.omardiaa.transcript.jda.exception.TranscriberPermissionException;
 
 public class SlashCommandListener extends ListenerAdapter {
   private final TranscriberClient client;
@@ -79,13 +97,28 @@ public class SlashCommandListener extends ListenerAdapter {
 
   @Override
   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    // Acknowledge the interaction before Discord expires it
+    event.deferReply().queue();
+
     if (event.getName().equals("transcript")) {
       client.transcribe(event.getChannel())
             .thenAccept(transcript -> {
+              // Upload the generated transcript
               event.getHook().sendFiles(transcript.toFileUpload()).queue();
             })
             .exceptionally(throwable -> {
-              event.getHook().sendMessage("Failed to generate transcript!").queue();
+              if (throwable.getCause() instanceof TranscriberPermissionException ex) {
+                // Handle channel permission exception
+                event.getHook()
+                     .sendMessageFormat(
+                       "Failed to generate transcript due to missing '%s' permission.",
+                       ex.getPermission().getName())
+                     .queue();
+              } else {
+                // Handle unknown exception
+                event.getHook().sendMessage("Failed to generate transcript due to unknown exception.").queue();
+              }
+
               return null;
             });
     }
@@ -95,7 +128,7 @@ public class SlashCommandListener extends ListenerAdapter {
 
 ## 🌟 Support The Project
 
-If you found this useful, please consider giving it a 🌟!
+If you found this useful, please consider starring the repository 🌟!
 
 <a href="https://fiverr.com/skywolfxp"><img alt="Fiverr" src="https://img.shields.io/badge/-1DBF73?style=for-the-badge&logo=fiverr&logoColor=FFF&logoSize=auto"/></a>
 <a href="https://ko-fi.com/omardiaadev"><img alt="Ko-fi" src="https://img.shields.io/badge/ko--fi-FF6433?style=for-the-badge&logo=kofi&logoColor=FFF"/></a>
