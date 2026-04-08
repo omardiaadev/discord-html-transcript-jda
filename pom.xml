@@ -50,6 +50,11 @@
     <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
   </scm>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/omardiaadev/discord-html-transcript-jda/issues</url>
+  </issueManagement>
+
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
