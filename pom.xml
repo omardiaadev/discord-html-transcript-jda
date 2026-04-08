@@ -46,7 +46,7 @@
 
   <scm>
     <connection>scm:git:https://github.com/omardiaadev/discord-html-transcript-jda.git</connection>
-    <developerConnection>scm:git:https://github.com:omardiaadev/discord-html-transcript-jda.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/omardiaadev/discord-html-transcript-jda.git</developerConnection>
     <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
   </scm>
 
