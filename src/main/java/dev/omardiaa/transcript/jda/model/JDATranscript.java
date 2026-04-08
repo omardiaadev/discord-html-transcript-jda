@@ -23,7 +23,7 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * A {@link JDA} implementation of {@link AbstractTranscript} that provides utilities for JDA's {@link FileUpload}.
+ * A {@link AbstractTranscript} implementation for {@link JDA}.
  */
 @NullMarked
 public final class JDATranscript extends AbstractTranscript {

@@ -16,7 +16,6 @@
 
 package dev.omardiaa.transcript.jda;
 
-import dev.omardiaa.transcript.jda.exception.TranscriberPermissionException;
 import dev.omardiaa.transcript.jda.model.JDATranscript;
 import dev.omardiaa.transcript.jda.service.TranscriberClient;
 import net.dv8tion.jda.api.JDA;
@@ -37,16 +36,16 @@ import java.nio.file.Path;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 /**
  * An integration test to verify transcript generation.
  * <br>
  * Additionally, this will generate a {@code transcript.html} of the specified channel under the {@code /target}
  * directory.
- *
- * @apiNote this test will only run when both {@link #DISCORD_BOT_TOKEN} and {@link #DISCORD_CHANNEL_ID}
- * environment variables are specified.
+ * <p>
+ * This test will be skipped if {@link #DISCORD_BOT_TOKEN} or {@link #DISCORD_CHANNEL_ID} environment variables are not
+ * specified.
  */
 @EnabledIfEnvironmentVariables({
   @EnabledIfEnvironmentVariable(named = "DISCORD_BOT_TOKEN", matches = ".+"),
@@ -58,10 +57,12 @@ class TranscriberClientTest {
   private static final String DISCORD_CHANNEL_ID = System.getenv("DISCORD_CHANNEL_ID");
 
   private static JDA jda;
+  private static TranscriberClient transcriber;
 
   @BeforeAll
   static void beforeAll() throws InterruptedException {
     jda = JDABuilder.createLight(DISCORD_BOT_TOKEN, GatewayIntent.MESSAGE_CONTENT).build().awaitReady();
+    transcriber = new TranscriberClient(jda);
   }
 
   @AfterAll
@@ -72,38 +73,19 @@ class TranscriberClientTest {
   }
 
   @Test
-  void transcribeGeneratesTranscript() throws IOException {
-    LOGGER.info("Transcribing...");
-
+  void shouldTranscribe() throws IOException {
     TextChannel channel = jda.getTextChannelById(DISCORD_CHANNEL_ID);
+    assertNotNull(channel, "Channel not found.");
 
-    assertNotNull(channel);
+    JDATranscript transcript = assertTimeoutPreemptively(
+      Duration.ofSeconds(30),
+      () -> transcriber.transcribe(channel).join());
 
-    JDATranscript transcript = assertTimeout(
-      Duration.ofMinutes(3),
-      () -> new TranscriberClient(jda)
-        .transcribe(channel)
-        .whenComplete((t, throwable) -> {
-          if (throwable == null) {
-            LOGGER.info("Transcribed '#{}'.", channel.getName());
-            return;
-          }
-
-          if (throwable instanceof TranscriberPermissionException ex) {
-            LOGGER.info("Failed to generate transcript due to missing '{}' permission.", ex.getPermission().getName());
-          } else {
-            LOGGER.info("Failed to generate transcript due to unknown exception.");
-          }
-        })
-        .join());
-
-    assertNotNull(transcript);
-
-    Path dir = Path.of("target");
-    Files.createDirectories(dir);
-    Path filePath = dir.resolve("transcript.html");
+    Path targetDir = Path.of("target");
+    Files.createDirectories(targetDir);
+    Path filePath = targetDir.resolve("transcript.html");
 
     transcript.toFile(filePath.toFile());
-    LOGGER.info("Transcript: file://{}", filePath.toAbsolutePath());
+    LOGGER.info("Saved: file://{}", filePath.toAbsolutePath());
   }
 }
