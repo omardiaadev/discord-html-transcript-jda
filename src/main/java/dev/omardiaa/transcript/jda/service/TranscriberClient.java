@@ -20,12 +20,12 @@ import dev.omardiaa.transcript.core.model.Payload;
 import dev.omardiaa.transcript.core.model.payload.Channel;
 import dev.omardiaa.transcript.core.model.payload.Guild;
 import dev.omardiaa.transcript.core.model.payload.Message;
+import dev.omardiaa.transcript.core.model.payload.PayloadOptions;
 import dev.omardiaa.transcript.core.service.Transcriber;
 import dev.omardiaa.transcript.jda.exception.TranscriberPermissionException;
 import dev.omardiaa.transcript.jda.model.JDATranscript;
+import dev.omardiaa.transcript.jda.util.TranscriberUtil;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.SelfMember;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jspecify.annotations.NullMarked;
@@ -39,32 +39,29 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 public class TranscriberClient {
   private final Transcriber transcriber;
-  private final TranscriberFetcher transcriberFetcher;
+  private final TranscriberFetcher fetcher;
 
   /**
-   * Constructs a new {@link TranscriberClient} instance configured with the specified {@code jda} instance.
+   * Constructs a new {@link TranscriberClient} instance.
    *
    * @param jda
    *   the {@link JDA} instance used to fetch the {@link Payload}.
    *
    * @throws IllegalStateException
-   *   if the specified {@code jda} instance disables {@link GatewayIntent#MESSAGE_CONTENT}.
+   *   if the provided {@code jda} instance is missing {@link GatewayIntent#MESSAGE_CONTENT}.
    */
   public TranscriberClient(JDA jda) {
-    if (!jda.getGatewayIntents().contains(GatewayIntent.MESSAGE_CONTENT)) {
-      throw new IllegalStateException("MESSAGE_CONTENT intent must be enabled.");
-    }
-
+    TranscriberUtil.checkJDA(jda);
     this.transcriber = new Transcriber();
-    this.transcriberFetcher = new TranscriberFetcher(jda);
+    this.fetcher = new TranscriberFetcher(jda);
   }
 
   /**
-   * Provides a {@link CompletableFuture} of the transcript generation task for the specified {@code channel}.
+   * Provides a {@link CompletableFuture} of the transcript generation task for the provided {@code channel}.
    * <p>
    * This {@link CompletableFuture} completes exceptionally with {@link TranscriberPermissionException}
-   * if the JDA instance used does not have {@link Permission#VIEW_CHANNEL} or {@link Permission#MESSAGE_HISTORY}
-   * for the specified {@code channel}.
+   * if the {@code jda} instance used is missing any of {@link TranscriberUtil#REQUIRED_PERMISSIONS} for the provided
+   * {@code channel}.
    *
    * @param channel
    *   the {@link GuildMessageChannel} to transcribe.
@@ -72,23 +69,44 @@ public class TranscriberClient {
    * @return {@link CompletableFuture} of a {@link JDATranscript}.
    */
   public CompletableFuture<JDATranscript> transcribe(GuildMessageChannel channel) {
-    SelfMember member = channel.getGuild().getSelfMember();
+    return transcribe(channel, new PayloadOptions());
+  }
 
-    if (!member.hasPermission(channel, Permission.VIEW_CHANNEL)) {
-      return CompletableFuture.failedFuture(new TranscriberPermissionException(channel, Permission.VIEW_CHANNEL));
+  /**
+   * Provides a {@link CompletableFuture} of the transcript generation task for the provided {@code channel}.
+   * <p>
+   * This {@link CompletableFuture} completes exceptionally with {@link TranscriberPermissionException}
+   * if the {@code jda} instance used is missing any of {@link TranscriberUtil#REQUIRED_PERMISSIONS} for the provided
+   * {@code channel}.
+   *
+   * @param channel
+   *   the {@link GuildMessageChannel} to transcribe.
+   * @param options
+   *   the {@link PayloadOptions} to use.
+   *
+   * @return {@link CompletableFuture} of a {@link JDATranscript}.
+   */
+  public CompletableFuture<JDATranscript> transcribe(GuildMessageChannel channel, PayloadOptions options) {
+    try {
+      TranscriberUtil.checkChannel(channel);
+    } catch (TranscriberPermissionException e) {
+      return CompletableFuture.failedFuture(e);
     }
 
-    if (!member.hasPermission(channel, Permission.MESSAGE_HISTORY)) {
-      return CompletableFuture.failedFuture(new TranscriberPermissionException(channel, Permission.MESSAGE_HISTORY));
-    }
-
-    CompletableFuture<Guild> guildFuture = transcriberFetcher.getGuild(channel);
-    CompletableFuture<Channel> channelFuture = transcriberFetcher.getChannel(channel);
-    CompletableFuture<List<Message>> messagesFuture = transcriberFetcher.getMessages(channel);
+    CompletableFuture<Guild> guildFuture = fetcher.getGuild(channel);
+    CompletableFuture<Channel> channelFuture = fetcher.getChannel(channel);
+    CompletableFuture<List<Message>> messagesFuture = fetcher.getMessages(channel);
 
     return CompletableFuture
-      .allOf(guildFuture, channelFuture, messagesFuture)
-      .thenApply(v -> new Payload(guildFuture.join(), channelFuture.join(), messagesFuture.join(), null))
+      .allOf(
+        guildFuture,
+        channelFuture,
+        messagesFuture)
+      .thenApply(v -> new Payload(
+        guildFuture.join(),
+        channelFuture.join(),
+        messagesFuture.join(),
+        options))
       .thenCompose(transcriber::transcribe)
       .thenApply(JDATranscript::new);
   }

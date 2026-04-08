@@ -57,7 +57,11 @@ class TranscriberFetcher {
   }
 
   CompletableFuture<Channel> getChannel(GuildMessageChannel channel) {
-    return new JacksonRestAction<>(jda, Route.Channels.GET_CHANNEL.compile(channel.getId()), CHANNEL_TYPE).submit();
+    return new JacksonRestAction<>(
+      jda,
+      Route.Channels.GET_CHANNEL.compile(channel.getId()),
+      CHANNEL_TYPE)
+      .submit();
   }
 
   CompletableFuture<List<Message>> getMessages(GuildMessageChannel channel) {
@@ -69,7 +73,8 @@ class TranscriberFetcher {
   }
 
   private CompletableFuture<List<Message>> getMessages(
-    String channelId, List<Message> messages, @Nullable String lastMessageId) {
+    String channelId, List<Message> messages, @Nullable String lastMessageId
+  ) {
     Route.CompiledRoute route = Route.Messages.GET_MESSAGE_HISTORY.compile(channelId).withQueryParams("limit", "100");
 
     if (lastMessageId != null) {
@@ -85,7 +90,7 @@ class TranscriberFetcher {
           return CompletableFuture.completedStage(messages);
         }
 
-        return getMessages(channelId, messages, batch.get(batch.size() - 1).getId());
+        return getMessages(channelId, messages, batch.get(batch.size() - 1).id());
       });
   }
 }

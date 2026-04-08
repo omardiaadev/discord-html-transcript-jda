@@ -45,8 +45,8 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/omardiaadev/discord-html-transcript-jda.git</connection>
-    <developerConnection>scm:git:ssh://github.com:omardiaadev/discord-html-transcript-jda.git</developerConnection>
+    <connection>scm:git:https://github.com/omardiaadev/discord-html-transcript-jda.git</connection>
+    <developerConnection>scm:git:https://github.com:omardiaadev/discord-html-transcript-jda.git</developerConnection>
     <url>https://github.com/omardiaadev/discord-html-transcript-jda</url>
   </scm>
 
@@ -59,24 +59,14 @@
     <dependency>
       <groupId>dev.omardiaa</groupId>
       <artifactId>discord-html-transcript-core</artifactId>
-      <version>0.1.0-beta.2</version>
+      <version>0.1.0-beta.5</version>
     </dependency>
 
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>6.3.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>club.minnced</groupId>
-          <artifactId>opus-java</artifactId>
-        </exclusion>
-
-        <exclusion>
-          <groupId>com.google.crypto.tink</groupId>
-          <artifactId>tink</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>6.4.1</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

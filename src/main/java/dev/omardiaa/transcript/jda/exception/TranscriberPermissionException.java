@@ -18,22 +18,32 @@ package dev.omardiaa.transcript.jda.exception;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Indicates that the currently logged in account does not meet the specified {@link Permission}.
+ * Indicates that the currently logged in JDA instance is missing required permissions.
  */
-public class TranscriberPermissionException extends InsufficientPermissionException {
-  public TranscriberPermissionException(GuildChannel channel, Permission permission) {
+public class TranscriberPermissionException extends RuntimeException {
+  private final Set<Permission> missingPermissions;
+
+  public TranscriberPermissionException(GuildChannel channel, Set<Permission> missingPermissions) {
     super(
-      channel,
-      permission,
-      "JDA instance must have '"
-      + permission.getName()
-      + "' permission to transcribe #"
+      "JDA is missing required permissions '"
+      + missingPermissions.stream().map(Permission::getName).collect(Collectors.joining(", "))
+      + "' permission(s) to transcribe #"
       + channel.getName()
       + " ("
       + channel.getId()
       + ")");
+    this.missingPermissions = missingPermissions;
+  }
+
+  /**
+   * @return A {@link Set} of the missing permissions.
+   */
+  public Set<Permission> getMissingPermissions() {
+    return missingPermissions;
   }
 }
