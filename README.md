@@ -8,7 +8,7 @@
 
 <p align="center">
     <a href="https://central.sonatype.com/artifact/dev.omardiaa/discord-html-transcript-jda"><img alt="Maven Version" src="https://img.shields.io/maven-central/v/dev.omardiaa/discord-html-transcript-jda?label=Maven&color=0559D2"></a>
-    <a href="https://github.com/omardiaadev/discord-html-transcript"><img alt="discord-html-transcript" src="https://img.shields.io/github/v/tag/omardiaadev/discord-html-transcript?filter=0.1.0-beta.1&label=discord-html-transcript&color=0559D2"></a>
+    <a href="https://github.com/omardiaadev/discord-html-transcript"><img alt="discord-html-transcript" src="https://img.shields.io/github/v/tag/omardiaadev/discord-html-transcript?filter=0.1.0-beta.5&label=discord-html-transcript&color=0559D2"></a>
     <a href="https://github.com/omardiaadev/discord-html-transcript-jda/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/omardiaadev/discord-html-transcript-jda?label=License&color=0559D2"></a>
     <br>
     <a href="https://discord.gg/fWtQjEJgWX"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=FFF&color=5865F2"></a>
@@ -54,7 +54,7 @@
 <dependency>
   <groupId>dev.omardiaa</groupId>
   <artifactId>discord-html-transcript-jda</artifactId>
-  <version>0.1.0-beta.1</version>
+  <version>0.1.0-beta.2</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@
 
 ```kotlin
 
-implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.1")
+implementation("dev.omardiaa:discord-html-transcript-jda:0.1.0-beta.2")
 ```
 
 ## Usage
