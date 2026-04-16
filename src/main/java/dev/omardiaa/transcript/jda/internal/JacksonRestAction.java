@@ -28,10 +28,10 @@ import org.jspecify.annotations.NullMarked;
 import java.io.IOException;
 
 /**
- * A {@link RestAction} implementation for fetching raw response objects from the Discord API.
+ * A {@link RestAction} implementation for fetching raw entities from the Discord API.
  *
  * @param <T>
- *   the generic to use during deserialization of the raw response object.
+ *   the generic to use during deserialization of the raw entities.
  */
 @NullMarked
 public class JacksonRestAction<T> extends RestActionImpl<T> {
@@ -44,7 +44,7 @@ public class JacksonRestAction<T> extends RestActionImpl<T> {
    *   the type used during deserialization.
    *
    * @throws ParsingException
-   *   if any error occurs during deserialization of the JSON response.
+   *   if an error occurs during deserialization of the entities.
    */
   public JacksonRestAction(JDA jda, Route.CompiledRoute route, TypeReference<T> responseType) {
     super(
